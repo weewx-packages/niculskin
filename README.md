@@ -11,7 +11,7 @@ The cannonical source of Niculskin is [hosted on GitLab.com](gitlab).
 
 ## Installation
 
-The skins have been testet with weewx 3.5.0 and sqlite database.
+The skins have been developed for weewx 3.5.0 and testet with weewx 3.6.2 and sqlite database.
 
 ### With extension package
 
