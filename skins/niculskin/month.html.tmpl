@@ -6,9 +6,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="profile" href="http://gmpg.org/xfn/11" />
-        
+
         <title>$station.location - $niculskinLabels.timespans.month</title>
-        
+
         <!-- Open Graph -->
         <meta property="og:site_name" content="$station.location $niculskinLabels.timespans.month" />
         <meta property="og:description" content="$niculskinLabels.timespans.month in $station.location - weather web site powered by weewx" />
@@ -17,7 +17,7 @@
         <!-- Icons -->
         <link rel="icon" href="favicon.ico" type="image/png">
         <link rel="apple-touch-icon" href="touch-icon.png"/>
-        
+
         <!-- Styles -->
         <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -34,7 +34,7 @@
                 <h2>$niculskinLabels.timespans.month</h2>
                 <p><i class="fa fa-clock-o" ></i> $niculskinLabels.headings.last_update $current.dateTime</p>
                 </div>
-                
+
                 <div class="h-right" >
                     <table>
                         <tr><td><b>Station:</b></td><td>$station.hardware</td></tr>
@@ -55,12 +55,12 @@
                 </nav>
             </div>
         </header>
-        
+
         <div class="main" >
         <div class="container" >
-            
+
             <div class="left" >
-                
+
                 <div class="card" >
                     <h1><i class="fa fa-calendar m-orange" ></i> $niculskinLabels.headings.this_month</h1>
                     <table class="tablespacer">
@@ -156,12 +156,12 @@
                 </div>
 
             </div>
-            
+
             <div class="right" >
 
                 <div class="card cc graphs" >
-                    <h1><i class="fa fa-line-chart m-gruen" ></i> Monatliche Statistiken und Graphen</h1>
-                    
+                    <h1><i class="fa fa-line-chart m-gruen" ></i> $niculskinLabels.headings.monthly $niculskinLabels.headings.statistics & $niculskinLabels.headings.graphs</h1>
+
                     <img src="monthtempdew.png" alt="temperatures" />
                     <img src="monthtempchill.png" alt="heatchill" />
                     <img src="monthhilow.png" alt="Display highs and lows for the month" title="Daily highs and lows for the month" />
@@ -186,11 +186,11 @@
                     <img src="monthrx.png" alt="month rx percent"/>
                     #end if
                 </div>
-                
+
             </div>
         </div>
         </div>
-        
+
         <footer>
             <div class="container" >
             <div class="left">

@@ -6,9 +6,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="profile" href="http://gmpg.org/xfn/11" />
-        
+
         <title>$station.location - $niculskinLabels.title</title>
-        
+
         <!-- Open Graph -->
         <meta property="og:site_name" content="$station.location $niculskinLabels.title" />
         <meta property="og:description" content="$niculskinLabels.title in $station.location - weather web site powered by weewx" />
@@ -17,13 +17,13 @@
         <!-- Icons -->
         <link rel="icon" href="favicon.ico" type="image/png">
         <link rel="apple-touch-icon" href="touch-icon.png"/>
-        
+
         <!-- Styles -->
         <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link href="css/main.css" rel="stylesheet">
-        
+
         <!-- Skripte -->
         <script src="js/modernizr-2.6.2.min.js"></script>
     </head>
@@ -38,7 +38,7 @@
                 <h2>$niculskinLabels.headings.front_page - $niculskinLabels.timespans.today</h2>
                 <p><i class="fa fa-clock-o" ></i> $niculskinLabels.headings.last_update $current.dateTime</p>
                 </div>
-                
+
                 <div class="h-right" >
                     <table>
                         <tr><td><b>Station:</b></td><td>$station.hardware</td></tr>
@@ -59,12 +59,12 @@
                 </nav>
             </div>
         </header>
-        
+
         <div class="main" >
         <div class="container" >
-            
+
             <div class="left" >
-                
+
                 <div class="card" >
                     <h1><i class="fa fa-sun-o m-orange" ></i> $niculskinLabels.headings.current_conditions</h1>
                     <table class="tablespacer">
@@ -78,8 +78,12 @@
                         <tr><td>$niculskinLabels.conditions.wind</td><td>$current.windSpeed $current.windDir.ordinal_compass ($current.windDir)</td></tr>
                         <tr><td>$niculskinLabels.conditions.rain_rate</td><td>$current.rainRate</td></tr>
                         <tr><td>$niculskinLabels.conditions.in_temp_humidity</td><td>$current.inTemp | $current.inHumidity</td></tr>
+                        #if $current.extraTemp1.has_data
                         <tr><td>$niculskinLabels.conditions.extra1_temp_humidity</td><td>$current.extraTemp1 | $current.extraHumid1</td></tr>
+                        #end if
+                        #if $current.extraTemp1.has_data
                         <tr><td>$niculskinLabels.conditions.extra2_temp_humidity</td><td>$current.extraTemp2 | $current.extraHumid2</td></tr>
+                        #end if
                     </table>
                 </div>
 
@@ -129,9 +133,9 @@
                         #end if
                     </table>
                 </div>
-                
+
                 #if $Extras.has_key('radar_img')
-                <div class="card" >                    
+                <div class="card" >
                     #if $Extras.has_key('radar_url')
                     <a href="$Extras.radar_url" target="_blank">
                     #end if
@@ -139,12 +143,12 @@
                     #if $Extras.has_key('radar_url')
                     </a>
                     #end if
-                    
+
                     <h3>
                         #if $Extras.has_key('radar_gif')
-                        
+
                         <a id="btn1" class="cpointer" >Animation 3h / 24h</a>
-                        <script>    
+                        <script>
                             function changeRadar() {
                                 if(document.getElementById("radar").src == "$Extras.radar_img") {
                                     document.getElementById("radar").src = "$Extras.radar_gif";
@@ -152,24 +156,24 @@
                                     document.getElementById("radar").src = "$Extras.radar_img";
                                 }
                             }
-                            
+
                             var el = document.getElementById('btn1');
                             el.onclick = changeRadar;
                         </script>
                         #end if
-                    
+
                         #if $Extras.has_key('radar_url_alt')
                         #if $Extras.has_key('radar_url_alt_text')
                         | <a href="$Extras.radar_url_alt" target="_blank" >$Extras.radar_url_alt_text</a>
-                        #else 
+                        #else
                         | <a href="$Extras.radar_url_alt" target="_blank" >Second Radar</a>
                         #end if
                         #end if
                     </h3>
-                    
+
                 </div>
                 #end if
-                
+
                 #if $Extras.has_key('lightning_map')
                 <div class="card" >
                     #if $Extras.has_key('lightning_url')
@@ -183,11 +187,11 @@
                 #end if
 
             </div>
-            
+
             <div class="right" >
 
                 <div class="card cc graphs" >
-                    <h1><i class="fa fa-line-chart m-gruen" ></i> Graphen</h1>
+                    <h1><i class="fa fa-line-chart m-gruen" ></i> $niculskinLabels.headings.graphs</h1>
 
                     <img src="daytempdew.png" alt="temperatures" />
                     <img src="daytempchill.png" alt="heatchill" />
@@ -211,7 +215,7 @@
                 </div>
 
                 <div class="card" >
-                    <h1><i class="fa fa-star-o m-rot" ></i> Almanach</h1>
+                    <h1><i class="fa fa-star-o m-rot" ></i> $niculskinLabels.headings.almanac</h1>
                     #if $almanac.hasExtras
                     ## Extended almanac information is available. Do the full set of tables.
                     #set $sun_altitude = $almanac.sun.alt
@@ -221,7 +225,7 @@
                     #set $sun_None="<i>(Always up)</i>"
                     #end if
                     <div class="haelfte" >
-                        <h3>Sonne</h3>
+                        <h3>$niculskinLabels.headings.sun</h3>
                         <table>
                             <tr><td>$niculskinLabels.headings.civil_twilight_start:</td><td>$almanac(horizon=-6).sun(use_center=1).rise</td></tr>
                             <tr><td>$niculskinLabels.headings.sunrise:</td><td>$almanac.sun.rise.string($sun_None)</td></tr>
@@ -244,7 +248,7 @@
                         </table>
                     </div>
                     <div class="haelfte" >
-                        <h3>Mond</h3>
+                        <h3>$niculskinLabels.headings.moon</h3>
                         <table>
                             <tr><td>$niculskinLabels.headings.rise:</td><td>$almanac.moon.rise</td></tr>
                             <tr><td>$niculskinLabels.headings.transit:</td><td>$almanac.moon.transit</td></tr>
@@ -275,7 +279,7 @@
             </div>
         </div>
         </div>
-        
+
         <footer>
             <div class="container" >
             <div class="left">

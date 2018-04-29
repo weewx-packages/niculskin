@@ -53,7 +53,7 @@ class NiculskinInstaller(setup.ExtensionInstaller):
             ]
 
         super(NiculskinInstaller, self).__init__(
-            version="1.0",
+            version="1.1",
             name='niculskin',
             description='A skin in responsive design using bootstrap and offering history tables',
             author="Nico Gulden",
