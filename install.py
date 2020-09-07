@@ -27,6 +27,8 @@ class NiculskinInstaller(setup.ExtensionInstaller):
            ('skins/niculskin/NOAA',
             ['skins/niculskin/NOAA/NOAA-YYYY.txt.tmpl',
              'skins/niculskin/NOAA/NOAA-YYYY-MM.txt.tmpl']),
+           ('skins/niculskin/RSS',
+            ['skins/niculskin/RSS/weewx_rss.xml.tmpl']),
            ('bin/user',
             ['bin/user/historygenerator.py',
              'bin/user/translategenerator.py']),
