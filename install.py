@@ -36,6 +36,7 @@ class NiculskinInstaller(setup.ExtensionInstaller):
             ['skins/niculskin/css/main.css',
              'skins/niculskin/css/main.css.map',
              'skins/niculskin/css/bootstrap.min.css',
+             'skins/niculskin/css/google-fonts-lato.css',
              'skins/niculskin/css/font-awesome.min.css',]),
            ('skins/niculskin/css/scss',
             ['skins/niculskin/css/scss/_dry.scss',
