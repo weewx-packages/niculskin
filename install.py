@@ -60,20 +60,20 @@ class NiculskinInstaller(setup.ExtensionInstaller):
             author_email="ngulden@gmx.de",
             files=files)
 
-        print ""
-        print "The following alternative languages are available:"
+        print("")
+        print("The following alternative languages are available:")
         self.language = None
 
         for f in files:
             if f[0] == 'skins/languages':
                 for language in f[1]:
                     l = language.strip('conf').split('/')[-1]
-                    print "   %s" % l[:-1]
+                    print("   {}".format(l[:-1]))
 
-        print ""
-        print "Language changes can be made in skins/niculskin/skin.conf"
+        print("")
+        print("Language changes can be made in skins/niculskin/skin.conf")
 
-        print ""
-        print "Default location for HTML and image files is public_html/"
-        print "*** POINT YOUR BROWSER TO: public_html/index.html ***"
-        print ""
+        print("")
+        print("Default location for HTML and image files is public_html/")
+        print("*** POINT YOUR BROWSER TO: public_html/index.html ***")
+        print("")
