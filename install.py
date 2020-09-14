@@ -2,7 +2,7 @@
 #
 # Based on installer for boostrap skin
 #
-# Configured by Nico to install Niculskin, 2016.
+# Configured by Nico to install Niculskin, 2016-2020
 
 import os.path
 import configobj
