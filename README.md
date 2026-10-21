@@ -5,13 +5,23 @@ Niculskin is a skin for the [weewx project](http://weewx.com/). It is based on t
 1. [Sofaskin for Weewx](http://neoground.com/projects/weewx/)
 1. [Bootstrap skin for Weewx](https://github.com/brewster76/fuzzy-archer/)
 
-## Canonical source
+## Independent continuation
 
-The cannonical source of Niculskin is [hosted on GitLab.com](gitlab).
+This repository continues [ngulden/niculskin](https://gitlab.com/ngulden/niculskin)
+from d9741244a2a42321d3e0f5802bfeeb2952156ffb. It retains the full upstream
+history and GPLv2 license and is maintained separately.
+
+Version 1.1.0 applies translations before WeeWX constructs unit formatters.
+The additional English and German strings from upstream MR !10 are included
+with their original commit history. Bootstrap 5.3.8 and Font Awesome Free 7.3.1
+are bundled locally, including Font Awesome's v4 compatibility styles and fonts.
+The templates use these local files. Their complete licenses are in
+`skins/niculskin/licenses`. No Bootstrap JavaScript is used by these templates.
+
 
 ## Installation
 
-The skins have been developed for weewx 3.5.0 and testet with weewx 3.6.2 and sqlite database.
+The continuation is tested with WeeWX 5, SQLite, German and English reports.
 
 ### With extension package
 
@@ -28,13 +38,13 @@ Install it using the Weewx extension installer.
 
 ```bash
 $ cd /home/weewx # or where your base install is /home/weewx
-$ bin/wee_extension --install=[wherever you have put the .tar.gz archive]
+$ weectl extension install [path to the .tar.gz archive]
 ```
 
 * If you used the Debian installer:
 
 ```bash
-$ sudo wee_extension --install=[wherever you have put the .tar.gz archive]
+$ weectl extension install [path to the .tar.gz archive]
 ```
 
 ### Manual installation
@@ -122,3 +132,11 @@ Thanks to Sven Reifschneider, the creator of Sofaskin. I liked his skin most as 
 And thanks to Nick Dajda. He had the history for the weather data. I'm glad I found his code.
 
 [gitlab]: https://gitlab.com/ngulden/niculskin
+
+
+## Tests
+
+Run `python -m pytest -q tests` with WeeWX and pytest installed. The tests create
+an isolated SQLite archive and render every HTML template in German and English.
+They also check that the CSS font references resolve to bundled local files.
+Physical station readings and the optional external radar links are not used.

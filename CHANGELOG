@@ -1,4 +1,12 @@
+1.1.0 2026-10-22
+  Translate before formatter construction; additional English/German strings.
+  Bundle Bootstrap 5.3.8 and Font Awesome Free 7.3.1 with full license texts.
+  Use the WeeWX 5 extension installer.
+
 # Changelog for Niculskin
+
+## v1.1
+* Add more localization strings
 
 ## v1.0
 

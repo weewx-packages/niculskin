@@ -1,92 +1,29 @@
-# installer for the Niculskin.
-#
-# Based on installer for boostrap skin
-#
-# Configured by Nico to install Niculskin, 2016-2020
+# Installer for the independent Niculskin continuation.
+# Modified 2026-10-22: WeeWX 5 installer and complete local asset manifest.
+import os
 
-import os.path
-import configobj
-import setup
-import distutils
+from weecfg.extension import ExtensionInstaller
+
 
 def loader():
     return NiculskinInstaller()
 
-class NiculskinInstaller(setup.ExtensionInstaller):
-    _skin_conf_files = ['niculskin/skin.conf', ]
 
+class NiculskinInstaller(ExtensionInstaller):
     def __init__(self):
-        files=[('skins/niculskin',
-            ['skins/niculskin/history.html.tmpl',
-             'skins/niculskin/index.html.tmpl',
-             'skins/niculskin/month.html.tmpl',
-             'skins/niculskin/week.html.tmpl',
-             'skins/niculskin/year.html.tmpl',
-             'skins/niculskin/skin.conf',
-             'skins/niculskin/favicon.ico']),
-           ('skins/niculskin/NOAA',
-            ['skins/niculskin/NOAA/NOAA-YYYY.txt.tmpl',
-             'skins/niculskin/NOAA/NOAA-YYYY-MM.txt.tmpl']),
-           ('skins/niculskin/RSS',
-            ['skins/niculskin/RSS/weewx_rss.xml.tmpl']),
-           ('bin/user',
-            ['bin/user/historygenerator.py',
-             'bin/user/translategenerator.py']),
-           ('skins/niculskin/css',
-            ['skins/niculskin/css/main.css',
-             'skins/niculskin/css/main.css.map',
-             'skins/niculskin/css/bootstrap.min.css',
-             'skins/niculskin/css/google-fonts-lato.css',
-             'skins/niculskin/css/font-awesome.min.css',]),
-           ('skins/niculskin/css/scss',
-            ['skins/niculskin/css/scss/_dry.scss',
-             'skins/niculskin/css/scss/main.scss',
-             'skins/niculskin/css/scss/_mixins.scss',
-             'skins/niculskin/css/scss/_normalize.scss',
-             'skins/niculskin/css/scss/_site.scss',
-             'skins/niculskin/css/scss/_variables.scss',
-            ]),
-           ('skins/niculskin/js',
-            ['skins/niculskin/js/modernizr-2.6.2.min.js']),
-           ('skins/niculskin/fonts',
-            ['skins/niculskin/fonts/FontAwesome.otf',
-             'skins/niculskin/fonts/fontawesome-webfont.eot',
-             'skins/niculskin/fonts/fontawesome-webfont.svg',
-             'skins/niculskin/fonts/fontawesome-webfont.ttf',
-             'skins/niculskin/fonts/fontawesome-webfont.woff',
-             'skins/niculskin/fonts/fontawesome-webfont.woff2',
-            ]),           
-           ('skins/languages',
-            ['skins/languages/dutch.conf',
-             'skins/languages/espanol.conf',
-             'skins/languages/finnish.conf',
-             'skins/languages/francais.conf',
-             'skins/languages/german.conf',
-             'skins/languages/italian.conf'])
-            ]
-
+        files = []
+        root = os.path.dirname(os.path.abspath(__file__))
+        for directory, dirs, names in os.walk(os.path.join(root, 'skins')):
+            relative = os.path.relpath(directory, root)
+            paths = [os.path.join(relative, name) for name in sorted(names)]
+            if paths:
+                files.append((relative, paths))
+        files.append(('bin/user', ['bin/user/historygenerator.py', 'bin/user/translategenerator.py']))
         super(NiculskinInstaller, self).__init__(
-            version="1.0",
+            version='1.1.0',
             name='niculskin',
-            description='A skin in responsive design using bootstrap and offering history tables',
-            author="Nico Gulden",
-            author_email="ngulden@gmx.de",
+            description='Responsive skin with translated labels and history tables.',
+            author='Nico Gulden',
+            author_email='ngulden@gmx.de',
+            config={'StdReport': {'Niculskin': {'skin': 'niculskin', 'enable': True}}},
             files=files)
-
-        print("")
-        print("The following alternative languages are available:")
-        self.language = None
-
-        for f in files:
-            if f[0] == 'skins/languages':
-                for language in f[1]:
-                    l = language.strip('conf').split('/')[-1]
-                    print("   {}".format(l[:-1]))
-
-        print("")
-        print("Language changes can be made in skins/niculskin/skin.conf")
-
-        print("")
-        print("Default location for HTML and image files is public_html/")
-        print("*** POINT YOUR BROWSER TO: public_html/index.html ***")
-        print("")

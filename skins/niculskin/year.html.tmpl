@@ -1,3 +1,4 @@
+## Modified 2026-10-22: use bundled Bootstrap and Font Awesome assets.
 <!DOCTYPE html>
 <html class="no-js">
     <head>
@@ -6,9 +7,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="profile" href="http://gmpg.org/xfn/11" />
-        
+
         <title>$station.location - $niculskinLabels.timespans.year</title>
-        
+
         <!-- Open Graph -->
         <meta property="og:site_name" content="$station.location $niculskinLabels.timespans.year" />
         <meta property="og:description" content="$niculskinLabels.timespans.year in $station.location - weather web site powered by weewx" />
@@ -17,11 +18,12 @@
         <!-- Icons -->
         <link rel="icon" href="favicon.ico" type="image/png">
         <link rel="apple-touch-icon" href="touch-icon.png"/>
-        
+
         <!-- Styles -->
         <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
-        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/v4-shims.min.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
     </head>
     <body>
@@ -34,7 +36,7 @@
                 <h2>$niculskinLabels.timespans.year</h2>
                 <p><i class="fa fa-clock-o" ></i> $niculskinLabels.headings.last_update $current.dateTime</p>
                 </div>
-                
+
                 <div class="h-right" >
                     <table>
                         <tr><td><b>Station:</b></td><td>$station.hardware</td></tr>
@@ -55,12 +57,12 @@
                 </nav>
             </div>
         </header>
-        
+
         <div class="main" >
         <div class="container" >
-            
+
             <div class="left" >
-                
+
                 <div class="card" >
                     <h1><i class="fa fa-calendar-o m-rot" ></i> $niculskinLabels.headings.year</h1>
                     <table class="tablespacer">
@@ -107,7 +109,7 @@
                 </div>
 
                 <div class="card" >
-                    <h1><i class="fa fa-cloud m-blau" ></i> Regenjahr (1-$station.rain_year_str Beginn)</h1>
+                    <h1><i class="fa fa-cloud m-blau" ></i> $Labels.Generic.rain ($niculskinLabels.headings.since 1-$station.rain_year_str)</h1>
                     <table class="tablespacer">
                         <tr><td>$niculskinLabels.conditions.rain_sum</td><td>$rainyear.rain.sum</td><td></td></tr>
                         <tr><td>$niculskinLabels.conditions.rain_rate_max</td><td>$rainyear.rainRate.max</td><td>$rainyear.rainRate.maxtime</td></tr>
@@ -115,12 +117,12 @@
                 </div>
 
             </div>
-            
+
             <div class="right" >
 
                 <div class="card cc graphs" >
-                    <h1><i class="fa fa-line-chart m-gruen" ></i> Yearly Statistics and Plots</h1>
-                    
+                    <h1><i class="fa fa-line-chart m-gruen" ></i> $niculskinLabels.headings.yearly $niculskinLabels.headings.statistics & $niculskinLabels.headings.graphs</h1>
+
                     <img src="yeartempdew.png" alt="temperatures" />
                     <img src="yeartempchill.png" alt="heatchill" />
                     <img src="yearhilow.png" alt="Daily highs and lows for the year" title="Daily highs and lows for the year"/>
@@ -145,11 +147,11 @@
                     <img src="yearrx.png" alt="year rx percent"/>
                     #end if
                 </div>
-                
+
             </div>
         </div>
         </div>
-        
+
         <footer>
             <div class="container" >
             <div class="left">

@@ -1,5 +1,6 @@
 #
 # Copyright (c) 2015  Nick Dajda <nick.dajda@gmail.com>
+# Modified 2026-10-22: load translations before WeeWX constructs formatters.
 #
 # Distributed under the terms of the GNU GENERAL PUBLIC LICENSE
 #
@@ -33,65 +34,69 @@ these translation classes:
         generator_list = user.translategenerator.CheetahGeneratorTranslated, user.translategenerator.ImageGeneratorTranslated, weewx.reportengine.CopyGenerator
 """
 
-import syslog
+import copy
+import logging
 import os.path
-from configobj import ConfigObj
+from configobj import ConfigObj, ConfigObjError
 
 from weewx.imagegenerator import ImageGenerator
 from weewx.cheetahgenerator import CheetahGenerator
 
+log = logging.getLogger(__name__)
+
+
 class ImageGeneratorTranslated(ImageGenerator):
-    """Overwrite skin.conf dictionary with language specific entries"""
+    """Apply language labels before constructing the image generator."""
 
-    def setup(self):
-        language_dict = _get_language_dict(self.skin_dict, self.config_dict)
-
-        if language_dict is not None:
-            self.skin_dict.merge(language_dict)
-
-        ImageGenerator.setup(self)
+    def __init__(self, config_dict, skin_dict, *args, **kwargs):
+        translated = _translated_skin(skin_dict, config_dict)
+        super(ImageGeneratorTranslated, self).__init__(config_dict, translated, *args, **kwargs)
 
 
 class CheetahGeneratorTranslated(CheetahGenerator):
-    """Overwrite skin.conf dictionary with language specific entries"""
+    """Apply language labels before WeeWX constructs its formatter."""
 
-    def setup(self):
-        language_dict = _get_language_dict(self.skin_dict, self.config_dict)
+    def __init__(self, config_dict, skin_dict, *args, **kwargs):
+        translated = _translated_skin(skin_dict, config_dict)
+        super(CheetahGeneratorTranslated, self).__init__(config_dict, translated, *args, **kwargs)
 
-        if language_dict is not None:
-            self.skin_dict.merge(language_dict)
 
-        CheetahGenerator.setup(self)
+def _translated_skin(skin_dict, config_dict):
+    """Return a separate skin dictionary with the selected language merged.
+
+    Args:
+        skin_dict (ConfigObj): Report skin configuration.
+        config_dict (ConfigObj): Station configuration.
+
+    Returns:
+        ConfigObj: Translated copy, leaving other reports unchanged.
+    """
+    translated = copy.deepcopy(skin_dict)
+    language_dict = _get_language_dict(skin_dict, config_dict)
+    if language_dict is not None:
+        translated.merge(language_dict)
+    return translated
+
 
 def _get_language_dict(skin_dict, config_dict):
-    """Look for this section in the skin.conf dictionary:
-     [Language]
-        language = espanol
+    """Read the selected legacy language file, or use the English skin defaults.
 
-    Returns None if not found, or a link to the corresponding language.conf
-    dictionary."""
+    Args:
+        skin_dict (ConfigObj): Report skin configuration with optional Language section.
+        config_dict (ConfigObj): Station configuration containing the skin root.
 
-    language_dict = None
-
-    if 'Language' in skin_dict:
-        if 'language' in skin_dict['Language']:
-            language = skin_dict['Language']['language']
-
-            syslog.syslog(syslog.LOG_INFO, "%s: Language is %s" % (os.path.basename(__file__), language))
-
-            # Figure out where the language config files can be found
-            language_config_path = os.path.join(config_dict['WEEWX_ROOT'], config_dict['StdReport']['SKIN_ROOT'],
-                                                'languages', "%s.conf" % language)
-
-            try:
-                language_dict = ConfigObj(language_config_path)
-            except:
-                syslog.syslog(syslog.LOG_INFO, "%s: Could not import lanuguage dictionary %s" %
-                              os.path.basename(__file__), language_config_path)
-
-                language_dict = None
-
-    if language_dict is None:
-        syslog.syslog(syslog.LOG_DEBUG, "%s: No language override specified." % (os.path.basename(__file__)))
-
-    return language_dict
+    Returns:
+        ConfigObj|None: Language overrides, or None for English or an unavailable file.
+    """
+    language = skin_dict.get('Language', {}).get('language', 'english')
+    if language == 'english':
+        return None
+    if os.path.basename(language) != language:
+        raise ValueError('Language must name a file in skins/languages')
+    skin_root = skin_dict.get('SKIN_ROOT', config_dict['StdReport']['SKIN_ROOT'])
+    path = os.path.join(config_dict['WEEWX_ROOT'], skin_root, 'languages', language + '.conf')
+    try:
+        return ConfigObj(path, encoding='utf-8', file_error=True)
+    except (OSError, ConfigObjError) as e:
+        log.warning('Could not load language dictionary %s: %s', path, e)
+        return None
