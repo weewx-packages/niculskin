@@ -99,6 +99,7 @@ def test_installed_archive_publishes_dependencies_and_notices(tmp_path):
         completed = subprocess.run([sys.executable, str(helper), str(station), first_run],
                                    cwd=tmp_path, env=environment, capture_output=True, text=True)
         assert completed.returncode == 0, completed.stdout + completed.stderr
+        assert 'ERROR' not in completed.stderr, completed.stderr
         for name in ['index.html', 'week.html', 'month.html', 'year.html', 'history.html']:
             text = (public / name).read_text()
             assert 'Installed test station' in text
