@@ -1,3 +1,7 @@
+1.1.1 2026-10-22
+  Copy bundled CSS, webfonts and full third-party notices to report output.
+  Refresh these assets on upgrades; verify reports from an installed archive.
+
 1.1.0 2026-10-22
   Translate before formatter construction; additional English/German strings.
   Bundle Bootstrap 5.3.8 and Font Awesome Free 7.3.1 with full license texts.

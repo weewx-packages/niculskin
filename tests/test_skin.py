@@ -1,8 +1,10 @@
 import importlib
-import json
 from pathlib import Path
 import re
 import shutil
+import os
+import subprocess
+import zipfile
 import sys
 
 import configobj
@@ -66,3 +68,54 @@ def test_local_css_dependencies_exist():
             if url.startswith(('http:', 'https:', 'data:')):
                 continue
             assert (css.parent / url.split('#')[0].split('?')[0]).exists(), (css, url)
+
+
+def test_installed_archive_publishes_dependencies_and_notices(tmp_path):
+    archive = tmp_path / 'niculskin-test.zip'
+    with zipfile.ZipFile(archive, 'w') as package:
+        for name in ['install.py', 'LICENSE']:
+            package.write(ROOT / name, 'niculskin/' + name)
+        for directory in ['skins', 'bin']:
+            for path in (ROOT / directory).rglob('*'):
+                if path.is_file() and '__pycache__' not in path.parts:
+                    package.write(path, 'niculskin/' + path.relative_to(ROOT).as_posix())
+    station = tmp_path / 'station'
+    weectl = str(Path(sys.executable).parent / 'weectl')
+    for command in [[weectl, 'station', 'create', str(station), '--no-prompt', '--register=n'],
+                    [weectl, 'extension', 'install', str(archive), '--config',
+                     str(station / 'weewx.conf'), '--yes']]:
+        completed = subprocess.run(command, capture_output=True, text=True)
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+    public = station / 'public_html'
+    helper = ROOT / 'tests/render_installed_report.py'
+    environment = dict(os.environ, PYTHONPATH=str(station / 'bin'))
+    for first_run in ['first', 'upgrade']:
+        if first_run == 'upgrade':
+            for path in [public / 'css/bootstrap.min.css', public / 'css/font-awesome.min.css',
+                         public / 'css/v4-shims.min.css']:
+                path.write_text('old installed dependency')
+            shutil.rmtree(public / 'webfonts')
+            shutil.rmtree(public / 'licenses')
+        completed = subprocess.run([sys.executable, str(helper), str(station), first_run],
+                                   cwd=tmp_path, env=environment, capture_output=True, text=True)
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+        for name in ['index.html', 'week.html', 'month.html', 'year.html', 'history.html']:
+            text = (public / name).read_text()
+            assert 'Installed test station' in text
+            for asset in re.findall(r'(?:href|src)="((?:css|js)/[^"?#]+)', text):
+                assert (public / asset).is_file(), (name, asset)
+        for css in (public / 'css').glob('*.css'):
+            assert css.read_text() != 'old installed dependency'
+            for url in re.findall(r'url\([\'\"]?([^\)\'\"]+)', css.read_text()):
+                if not url.startswith(('http:', 'https:', 'data:')):
+                    assert (css.parent / url.split('#')[0].split('?')[0]).is_file(), (css, url)
+        skin = station / 'skins/niculskin'
+        for directory, pattern in [('webfonts', '*'), ('licenses', '*'), ('css', 'LICENSE*')]:
+            sources = list((skin / directory).glob(pattern))
+            assert sources
+            for source in sources:
+                assert (public / source.relative_to(skin)).read_bytes() == source.read_bytes()
+        assert 'Nicolas Gallagher and Jonathan Neal' in (public / 'licenses/normalize.css-1.1.3-MIT.txt').read_text()
+        assert 'Faruk Ates, Paul Irish, Alex Sexton' in (public / 'licenses/modernizr-2.6.2-MIT.txt').read_text()
+        assert 'Permission is hereby granted' in (public / 'licenses/modernizr-2.6.2-MIT.txt').read_text()
+        assert (public / 'daytempdew.png').is_file()

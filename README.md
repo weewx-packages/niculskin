@@ -15,7 +15,9 @@ Version 1.1.0 applies translations before WeeWX constructs unit formatters.
 The additional English and German strings from upstream MR !10 are included
 with their original commit history. Bootstrap 5.3.8 and Font Awesome Free 7.3.1
 are bundled locally, including Font Awesome's v4 compatibility styles and fonts.
-The templates use these local files. Their complete licenses are in
+Version 1.1.1 copies these files to the public report output on every run,
+including upgrades from 1.1.0. Complete Modernizr 2.6.2 and normalize.css 1.1.3
+notices accompany the original JavaScript and CSS. Their complete licenses are in
 `skins/niculskin/licenses`. No Bootstrap JavaScript is used by these templates.
 
 
@@ -29,7 +31,7 @@ The continuation is tested with WeeWX 5, SQLite, German and English reports.
 2. Create an extension archive:
 
 ```bash
-$ git archive master --prefix=niculskin/ | gzip > ../niculskin.tar.gz
+$ git archive main --prefix=niculskin/ | gzip > ../niculskin.tar.gz
 ```
 
 Install it using the Weewx extension installer.
@@ -138,5 +140,6 @@ And thanks to Nick Dajda. He had the history for the weather data. I'm glad I fo
 
 Run `python -m pytest -q tests` with WeeWX and pytest installed. The tests create
 an isolated SQLite archive and render every HTML template in German and English.
-They also check that the CSS font references resolve to bundled local files.
+The installed-archive test runs all standard generators and checks that HTML
+stylesheets, CSS font references and license files exist in the public output.
 Physical station readings and the optional external radar links are not used.

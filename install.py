@@ -20,7 +20,7 @@ class NiculskinInstaller(ExtensionInstaller):
                 files.append((relative, paths))
         files.append(('bin/user', ['bin/user/historygenerator.py', 'bin/user/translategenerator.py']))
         super(NiculskinInstaller, self).__init__(
-            version='1.1.0',
+            version='1.1.1',
             name='niculskin',
             description='Responsive skin with translated labels and history tables.',
             author='Nico Gulden',
