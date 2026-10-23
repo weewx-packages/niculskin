@@ -1,51 +1,50 @@
 # Niculskin
 
-Niculskin provides translated weather pages, image plots and history tables as a skin for the [weewx project](http://weewx.com/). It is based on two other skins:
+Niculskin is a skin for [WeeWX](https://weewx.com/) with translated weather
+pages, image plots and colour-coded history tables. It is based on
+[Sofaskin for Weewx](http://neoground.com/projects/weewx/) and the
+[Bootstrap skin for Weewx](https://github.com/brewster76/fuzzy-archer/).
 
-1. [Sofaskin for Weewx](http://neoground.com/projects/weewx/)
-1. [Bootstrap skin for Weewx](https://github.com/brewster76/fuzzy-archer/)
+This repository is an independent continuation of
+[ngulden/niculskin](https://gitlab.com/ngulden/niculskin), started from
+d9741244a2a42321d3e0f5802bfeeb2952156ffb with the full upstream history.
 
-## Independent continuation
+![screenshot_1.png](screenshot_1.png)
 
-This repository continues [ngulden/niculskin](https://gitlab.com/ngulden/niculskin)
-from d9741244a2a42321d3e0f5802bfeeb2952156ffb. It retains the full upstream
-history and GPLv2 license and is maintained separately.
+![screenshot_2.png](screenshot_2.png)
 
-Version 1.1.0 applies translations before WeeWX constructs unit formatters.
-The additional English and German strings from upstream MR !10 are included
-with their original commit history. Bootstrap 5.3.8 and Font Awesome Free 7.3.1
-are bundled locally, including Font Awesome's v4 compatibility styles and fonts.
-Version 1.1.1 copies these files to the public report output on every run,
-including upgrades from 1.1.0. Complete Modernizr 2.6.2 and normalize.css 1.1.3
-notices accompany the original JavaScript and CSS. Their complete licenses are in
-`skins/niculskin/licenses`. No Bootstrap JavaScript is used by these templates.
+## Requirements
 
+The skin uses WeeWX's Cheetah, image and copy generators. It needs no
+additional Python package.
+
+The image plots use Droid Sans at
+`/usr/share/fonts/truetype/droid/DroidSans-Bold.ttf`. Install that font or set
+the `*_font_path` options in `[ImageGenerator]` of `skin.conf` to a font on
+your machine. Otherwise the plots use Pillow's default font.
 
 ## Installation
 
-Version 1.1.1 is the independent continuation release. Its catalog requirements
-are WeeWX 5.5.2–5.6 and Python 3.10–3.14. It uses WeeWX's Cheetah and image
-report generators; no additional Python dependency is required.
+Install `niculskin` from the [WeeWX packages catalog](https://github.com/weewx-packages/catalog/blob/main/packages/niculskin.md).
+The catalog page lists the current release, its WeeWX and Python
+requirements, and the install, update and removal commands.
 
-For a pip installation, activate the existing virtual environment that runs
-your WeeWX service before running these commands. Both `python` and `weectl`
-must come from that environment. For a distribution package installation, use
-its `weectl`, with `sudo` if required. Add `--config /path/to/weewx.conf` to the
-extension command when your station configuration is not found automatically.
+The installer copies the skin to `skins/niculskin`, the language files to
+`skins/languages` and the modules `user.historygenerator` and
+`user.translategenerator`. It adds a separate report next to your existing
+reports:
 
-Install the published archive with WeeWX 5's extension installer:
-
-```sh
-weectl extension install https://github.com/weewx-packages/niculskin/releases/download/v1.1.1/niculskin-1.1.1.zip
+```ini
+[StdReport]
+    [[Niculskin]]
+        skin = niculskin
+        enable = true
 ```
 
-Restart your WeeWX service after configuration, for example
-`sudo systemctl restart weewx` on systemd. The installer does not restart it
-for you.
-
-The installer copies `skins/niculskin`, `skins/languages`,
-`user.historygenerator` and `user.translategenerator`. It enables a separate
-report, so you do not need to replace `StandardReport`:
+The installer does not set `HTML_ROOT` for this report. Without it, Niculskin
+writes into the `[StdReport]` `HTML_ROOT`, where the Seasons report also
+writes `index.html` and other pages. Give the report its own directory that
+your web server serves, for example:
 
 ```ini
 [StdReport]
@@ -55,68 +54,103 @@ report, so you do not need to replace `StandardReport`:
         HTML_ROOT = /var/www/html/weewx/niculskin
 ```
 
-Choose a writable `HTML_ROOT` served by your web server. After restarting,
-wait for an archive interval or run `weectl report run Niculskin`.
-Back up custom skin files before reinstalling a newer archive. To remove it,
-run `weectl extension uninstall niculskin` and restart WeeWX.
+Restart WeeWX. Then wait for an archive interval or run
+`weectl report run Niculskin`. Back up custom skin files before an update.
 
 ## Configuration
 
-Set the language and site labels in the installed
-[`skin.conf`](skins/niculskin/skin.conf):
+The skin is configured in the installed `skins/niculskin/skin.conf`
+([source](skins/niculskin/skin.conf)).
+
+### Choose the language
 
 ```ini
 [Language]
     language = german
-[niculskinLabels]
-    title = "My weather station"
-    location_href = "#"
-    footer = "My station"
 ```
 
-The language files live in `skins/languages`, for example `german.conf`.
-The image plot defaults refer to Droid Sans at
-`/usr/share/fonts/truetype/droid/DroidSans-Bold.ttf`. Install that font or set
-the plot `*_font_path` options to a font on your machine; otherwise Pillow
-falls back to a default. Browser fonts are bundled separately with their
-notices in [`skins/niculskin/licenses`](skins/niculskin/licenses).
+`language` names a file in the `languages` directory of your skins directory,
+without `.conf`. The skin ships `dutch`, `espanol`, `finnish`, `francais`,
+`german` and `italian`. The default is `german`. Set `english` to use the
+labels in `skin.conf` without a language file. If the file cannot be read,
+WeeWX logs a warning and uses the labels in `skin.conf`.
 
-## Customization
+### Change the labels
 
-1. You may customize the labels in your language for your needs. The language labels can be found in the appropriate language file in the language skin, e.g. `$WEEWX_ROOT/skins/languages/german.conf` for the German language.
-1. If your language is not available, simply copy one of the present language configuration files, change to labels appropriately and refer to it in the Niculskin skin.conf at `WEEWX_ROOT/skins/niculskin/skin.conf`. If you would like to contribute your language file, please open a merge request according to the [Contribution Guideline](CONTRIBUTING.md). Your contribution is welcome.
+The page labels are in `[niculskinLabels]` of `skin.conf`, for example:
 
-## Screenshots
+```ini
+[niculskinLabels]
+    title = "Current Weather Conditions"
+    location_ref_label = "Show on map"
+    footer = "&copy; 2016 by Nico Gulden"
+```
 
-![screenshot_1.png](screenshot_1.png)
+A language file overrides any label it contains. With `language = german`,
+`title` and `location_ref_label` come from `german.conf`, while `footer` comes
+from `skin.conf`. Change a label in the language file you use, or in
+`skin.conf` for `english`.
 
-![screenshot_2.png](screenshot_2.png)
+To add a language, copy one of the language files, translate the labels and
+set `language` to the new file name. Contributions of language files are
+welcome, see the [Contribution Guideline](CONTRIBUTING.md).
 
-## Contribution
+### Show radar and lightning images
 
-Please see the [Contribution Guideline](CONTRIBUTING.md) for more details.
+The `[Extras]` section of `skin.conf` holds optional links and images for the
+front page: `radar_img`, `radar_gif`, `radar_url`, `radar_url_alt`,
+`radar_url_alt_text`, `lightning_map` and `lightning_url`. All except
+`radar_url` are commented out. Uncomment and adjust them for your region.
+
+### Colour the history tables
+
+`[HistoryReport]` in `skin.conf` sets the value ranges and colours of the
+monthly and yearly history tables, and `refresh_interval` in minutes sets how
+often they are recalculated. The comments in that section describe each
+option.
+
+## Limitations
+
+* The pages load the Lato font from `http://fonts.googleapis.com`. Browsers
+  block this plain-HTTP request on pages served over HTTPS, and the page then
+  uses a fallback font. Bootstrap, Font Awesome and its webfonts are bundled
+  and copied to the report output. No Bootstrap JavaScript is used.
+* The skin installs the shared module `user.historygenerator`. Another skin
+  with a module of the same name, such as NeoWX Material, can replace it.
+  Review that overlap before installing both into the same station.
+* The tests use an isolated SQLite archive. Physical station readings and the
+  external radar links are not tested.
+
+## Development
+
+Run the tests with WeeWX and pytest installed. The installed-archive test
+calls the `weectl` next to the Python interpreter:
+
+```sh
+python -m pytest -q tests
+```
+
+The tests render the HTML templates in German and English. The installed-
+archive test installs the skin into a new station, runs the report twice and
+checks that stylesheets, CSS font references and license files exist in the
+public output.
+
+See the [Contribution Guideline](CONTRIBUTING.md) for issues and changes.
 
 ## License
 
-See [LICENSE](LICENSE) file.
+Niculskin (c) 2016-2020 Nico Gulden. `skin.conf` also carries the notices of
+Tom Keffer (2010) and Sven Reifschneider (Sofaskin, 2015). The generator
+modules are (c) 2013-2016 and 2015 Nick Dajda. Distributed under the GNU
+General Public License version 2. See [LICENSE](LICENSE).
 
-## Credits
+The bundled Bootstrap, Font Awesome, Modernizr and normalize.css files keep
+their own licenses, which are in
+[`skins/niculskin/licenses`](skins/niculskin/licenses) and are copied to the
+report output.
+
+### Credits
 
 Thanks to Sven Reifschneider, the creator of Sofaskin. I liked his skin most as I was looking for something different in the look and feel of weewx.
 
 And thanks to Nick Dajda. He had the history for the weather data. I'm glad I found his code.
-
-[gitlab]: https://gitlab.com/ngulden/niculskin
-
-
-## Tests
-
-Run `python -m pytest -q tests` with WeeWX and pytest installed. The tests create
-an isolated SQLite archive and render every HTML template in German and English.
-The installed-archive test runs all standard generators and checks that HTML
-stylesheets, CSS font references and license files exist in the public output.
-Physical station readings and the optional external radar links are not used.
-
-The skin installs a shared `user.historygenerator` module. Another skin using
-the same module name can replace it. Review that overlap before installing
-Niculskin and NeoWX Material into the same station.
