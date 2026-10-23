@@ -1,4 +1,4 @@
-Unreleased
+1.1.2 2026-10-23
   Install the report into its own HTML_ROOT subdirectory, next to Seasons.
   Stop loading the Lato font from Google Fonts; the stylesheet has used Roboto,
   Helvetica and Arial since 2020. Replace broken characters in the Dutch title.
