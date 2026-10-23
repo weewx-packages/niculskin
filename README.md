@@ -1,6 +1,6 @@
-# Theme for weewx weather station
+# Niculskin
 
-Niculskin is a skin for the [weewx project](http://weewx.com/). It is based on two other skins:
+Niculskin provides translated weather pages, image plots and history tables as a skin for the [weewx project](http://weewx.com/). It is based on two other skins:
 
 1. [Sofaskin for Weewx](http://neoground.com/projects/weewx/)
 1. [Bootstrap skin for Weewx](https://github.com/brewster76/fuzzy-archer/)
@@ -23,94 +23,64 @@ notices accompany the original JavaScript and CSS. Their complete licenses are i
 
 ## Installation
 
-The continuation is tested with WeeWX 5, SQLite, German and English reports.
+Version 1.1.1 is the independent continuation release. Its catalog requirements
+are WeeWX 5.5.2–5.6 and Python 3.10–3.14. It uses WeeWX's Cheetah and image
+report generators; no additional Python dependency is required.
 
-### With extension package
+Install the published archive with WeeWX 5's extension installer:
 
-1. Clone this repository to your machine, where weewx is installed.
-2. Create an extension archive:
-
-```bash
-$ git archive main --prefix=niculskin/ | gzip > ../niculskin.tar.gz
+```sh
+weectl extension install https://github.com/weewx-packages/niculskin/releases/download/v1.1.1/niculskin-1.1.1.zip
 ```
 
-Install it using the Weewx extension installer.
+Use the `weectl` from your WeeWX environment. Add
+`--config /path/to/weewx.conf` when the station configuration is not found
+automatically. Package installations may require `sudo`; activate the WeeWX
+virtual environment for pip installations. Restart your WeeWX service after
+configuration, for example `sudo systemctl restart weewx` on systemd.
+The installer does not restart it for you.
 
-* If you have installed weewx yourself:
+The installer copies `skins/niculskin`, `skins/languages`,
+`user.historygenerator` and `user.translategenerator`. It enables a separate
+report, so you do not need to replace `StandardReport`:
 
-```bash
-$ cd /home/weewx # or where your base install is /home/weewx
-$ weectl extension install [path to the .tar.gz archive]
+```ini
+[StdReport]
+    [[Niculskin]]
+        skin = niculskin
+        enable = true
+        HTML_ROOT = /var/www/html/weewx/niculskin
 ```
 
-* If you used the Debian installer:
-
-```bash
-$ weectl extension install [path to the .tar.gz archive]
-```
-
-### Manual installation
-
-In order to install this skin into your weewx installation follow these steps:
-
-1. Clone this repository to your machine, where weewx is installed.
-1. Stop the weewx service.
-1. Copy the files in `bin/user` to `$WEEWX_ROOT/bin/user`.
-1. Copy the directories `skins/languages` and `skins/niculskin` to `$WEEWX_ROOT/skins`.
+Choose a writable `HTML_ROOT` served by your web server. After restarting,
+wait for an archive interval or run `weectl report run Niculskin`.
+Back up custom skin files before reinstalling a newer archive. To remove it,
+run `weectl extension uninstall niculskin` and restart WeeWX.
 
 ## Configuration
 
-No matter how you installed the skin, you should configure it afterwards to you needs. Here's how:
+Set the language and site labels in the installed
+[`skin.conf`](skins/niculskin/skin.conf):
 
-1. Edit your `$WEEWX_ROOT/weewx.conf` and set `skin` in the section `StdReport` so it will look something like this:
-```conf
-[StdReport]
-
-    # Where the skins reside, relative to WEEWX_ROOT
-    SKIN_ROOT = skins
-
-    # Where the generated reports should go, relative to WEEWX_ROOT
-    HTML_ROOT = public_html
-
-    # The database binding indicates which data should be used in reports.
-    data_binding = wx_binding
-
-    # Each of the following subsections defines a report that will be run.
-
-    [[StandardReport]]
-        # See the customizing guide to change the units, plot types and line
-        # colors, modify the fonts, display additional sensor data, and other
-        # customizations. Many of those changes can be made here by overriding
-        # parameters, or by modifying templates within the skin itself.
-
-        # The StandardReport uses the 'Standard' skin, which contains the
-        # images, templates and plots for the report.
-        #        skin = Standard
-        skin = niculskin
-```
-2. Edit `$WEEWX_ROOT/skins/niculskin/skin.conf` and set `Language` to your language. It should look like this:
-```conf
+```ini
 [Language]
-
-    #
-    # Set a language below and labels will be overridden with any that are specified in
-    # skins/languages/[language].conf
-    #
-    # Choices are: dutch, espanol, finnish, francais, italian, german
-
     language = german
-```
-3. Set the page title and page footer through the `[niculskinLabels]` section in `skins/niculskin/skin.conf`.
-```conf
 [niculskinLabels]
-    title = "The weather, [where you are]"
-    location_href = ["#" for nothing, or a hyperlink to some more information on your location]
-    footer = "&copy; [who you are]"
+    title = "My weather station"
+    location_href = "#"
+    footer = "My station"
 ```
+
+The language files live in `skins/languages`, for example `german.conf`.
+The image plot defaults refer to Droid Sans at
+`/usr/share/fonts/truetype/droid/DroidSans-Bold.ttf`. Install that font or set
+the plot `*_font_path` options to a font on your machine; otherwise Pillow
+falls back to a default. Browser fonts are bundled separately with their
+notices in [`skins/niculskin/licenses`](skins/niculskin/licenses).
 
 ## Customization
 
-1. You may customize the labels in your language for your needs. The language labels can be found in the appropriate language file in the language skin, e.g. `$WEEWX_ROOT/skins/language/german.conf` for the German language.
+1. You may customize the labels in your language for your needs. The language labels can be found in the appropriate language file in the language skin, e.g. `$WEEWX_ROOT/skins/languages/german.conf` for the German language.
 1. If your language is not available, simply copy one of the present language configuration files, change to labels appropriately and refer to it in the Niculskin skin.conf at `WEEWX_ROOT/skins/niculskin/skin.conf`. If you would like to contribute your language file, please open a merge request according to the [Contribution Guideline](CONTRIBUTING.md). Your contribution is welcome.
 
 ## Screenshots
@@ -143,3 +113,7 @@ an isolated SQLite archive and render every HTML template in German and English.
 The installed-archive test runs all standard generators and checks that HTML
 stylesheets, CSS font references and license files exist in the public output.
 Physical station readings and the optional external radar links are not used.
+
+The skin installs a shared `user.historygenerator` module. Another skin using
+the same module name can replace it. Review that overlap before installing
+Niculskin and NeoWX Material into the same station.
