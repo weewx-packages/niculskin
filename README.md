@@ -32,27 +32,19 @@ requirements, and the install, update and removal commands.
 The installer copies the skin to `skins/niculskin`, the language files to
 `skins/languages` and the modules `user.historygenerator` and
 `user.translategenerator`. It adds a separate report next to your existing
-reports:
+reports. The report writes to the subdirectory `niculskin` of the
+`[StdReport]` `HTML_ROOT`, so it does not overwrite the pages of the Seasons
+report. With `HTML_ROOT = public_html`, the installer adds:
 
 ```ini
 [StdReport]
     [[Niculskin]]
         skin = niculskin
         enable = true
+        HTML_ROOT = public_html/niculskin
 ```
 
-The installer does not set `HTML_ROOT` for this report. Without it, Niculskin
-writes into the `[StdReport]` `HTML_ROOT`, where the Seasons report also
-writes `index.html` and other pages. Give the report its own directory that
-your web server serves, for example:
-
-```ini
-[StdReport]
-    [[Niculskin]]
-        skin = niculskin
-        enable = true
-        HTML_ROOT = /var/www/html/weewx/niculskin
-```
+Change `HTML_ROOT` if your web server serves another directory.
 
 Restart WeeWX. Then wait for an archive interval or run
 `weectl report run Niculskin`. Back up custom skin files before an update.
@@ -111,10 +103,11 @@ option.
 
 ## Limitations
 
-* The pages load the Lato font from `http://fonts.googleapis.com`. Browsers
-  block this plain-HTTP request on pages served over HTTPS, and the page then
-  uses a fallback font. Bootstrap, Font Awesome and its webfonts are bundled
-  and copied to the report output. No Bootstrap JavaScript is used.
+* The pages load the Lato font from Google Fonts at
+  `https://fonts.googleapis.com`, so every page view sends a request to
+  Google. Without access to that server, the page uses a fallback font.
+  Bootstrap, Font Awesome and its webfonts are bundled and copied to the
+  report output. No Bootstrap JavaScript is used.
 * The skin installs the shared module `user.historygenerator`. Another skin
   with a module of the same name, such as NeoWX Material, can replace it.
   Review that overlap before installing both into the same station.
