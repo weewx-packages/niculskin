@@ -56,7 +56,7 @@ def test_actual_report_and_formatter(tmp_path, language, heading, unit):
         text = (tmp_path / 'html' / name).read_text()
         assert 'Test station' in text
         assert 'maxcdn.bootstrapcdn.com' not in text
-        assert 'http://fonts.googleapis.com' not in text
+        assert 'fonts.googleapis.com' not in text
         if name == 'index.html':
             assert heading in text
             assert ('Almanach' if language == 'german' else 'Almanac') in text

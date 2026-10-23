@@ -103,11 +103,9 @@ option.
 
 ## Limitations
 
-* The pages load the Lato font from Google Fonts at
-  `https://fonts.googleapis.com`, so every page view sends a request to
-  Google. Without access to that server, the page uses a fallback font.
-  Bootstrap, Font Awesome and its webfonts are bundled and copied to the
-  report output. No Bootstrap JavaScript is used.
+* The pages load no external resources. Bootstrap, Font Awesome and its
+  webfonts are bundled and copied to the report output. Text uses the browser's Roboto, Helvetica or Arial. No Bootstrap
+  JavaScript is used.
 * The skin installs the shared module `user.historygenerator`. Another skin
   with a module of the same name, such as NeoWX Material, can replace it.
   Review that overlap before installing both into the same station.
