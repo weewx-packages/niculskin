@@ -3,6 +3,11 @@
 Thank you for your interest in contributing to Niculskin. This guide details how
 to contribute in a way that is efficient for everyone.
 
+This independent continuation takes issues and pull requests at
+[weewx-packages/niculskin](https://github.com/weewx-packages/niculskin), against
+the `main` branch. The original guideline below refers to the GitLab project and
+its merge requests.
+
 ## Issue tracker
 
 If you face issues with the skin, please look for a similar issues first in [this projects issue tracker](https://gitlab.com/ngulden/niculskin/issues) at GitLab.
