@@ -27,18 +27,21 @@ Version 1.1.1 is the independent continuation release. Its catalog requirements
 are WeeWX 5.5.2–5.6 and Python 3.10–3.14. It uses WeeWX's Cheetah and image
 report generators; no additional Python dependency is required.
 
+For a pip installation, activate the existing virtual environment that runs
+your WeeWX service before running these commands. Both `python` and `weectl`
+must come from that environment. For a distribution package installation, use
+its `weectl`, with `sudo` if required. Add `--config /path/to/weewx.conf` to the
+extension command when your station configuration is not found automatically.
+
 Install the published archive with WeeWX 5's extension installer:
 
 ```sh
 weectl extension install https://github.com/weewx-packages/niculskin/releases/download/v1.1.1/niculskin-1.1.1.zip
 ```
 
-Use the `weectl` from your WeeWX environment. Add
-`--config /path/to/weewx.conf` when the station configuration is not found
-automatically. Package installations may require `sudo`; activate the WeeWX
-virtual environment for pip installations. Restart your WeeWX service after
-configuration, for example `sudo systemctl restart weewx` on systemd.
-The installer does not restart it for you.
+Restart your WeeWX service after configuration, for example
+`sudo systemctl restart weewx` on systemd. The installer does not restart it
+for you.
 
 The installer copies `skins/niculskin`, `skins/languages`,
 `user.historygenerator` and `user.translategenerator`. It enables a separate
