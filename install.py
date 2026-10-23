@@ -1,5 +1,6 @@
 # Installer for the independent Niculskin continuation.
 # Modified 2026-10-22: WeeWX 5 installer and complete local asset manifest.
+# Modified 2026-10-23: write the report to its own HTML_ROOT subdirectory.
 import os
 
 from weecfg.extension import ExtensionInstaller
@@ -25,5 +26,8 @@ class NiculskinInstaller(ExtensionInstaller):
             description='Responsive skin with translated labels and history tables.',
             author='Nico Gulden',
             author_email='ngulden@gmx.de',
-            config={'StdReport': {'Niculskin': {'skin': 'niculskin', 'enable': True}}},
+            # weectl prefixes HTML_ROOT with [StdReport] HTML_ROOT. A separate directory
+            # keeps Niculskin and Seasons from overwriting each other's index.html.
+            config={'StdReport': {'Niculskin': {'skin': 'niculskin', 'enable': True,
+                                                'HTML_ROOT': 'niculskin'}}},
             files=files)

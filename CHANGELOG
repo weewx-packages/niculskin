@@ -1,3 +1,7 @@
+Unreleased
+  Install the report into its own HTML_ROOT subdirectory, next to Seasons.
+  Load the Lato font over HTTPS. Replace broken characters in the Dutch title.
+
 1.1.1 2026-10-22
   Copy bundled CSS, webfonts and full third-party notices to report output.
   Refresh these assets on upgrades; verify reports from an installed archive.

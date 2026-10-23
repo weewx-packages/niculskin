@@ -56,6 +56,7 @@ def test_actual_report_and_formatter(tmp_path, language, heading, unit):
         text = (tmp_path / 'html' / name).read_text()
         assert 'Test station' in text
         assert 'maxcdn.bootstrapcdn.com' not in text
+        assert 'http://fonts.googleapis.com' not in text
         if name == 'index.html':
             assert heading in text
             assert ('Almanach' if language == 'german' else 'Almanac') in text
@@ -68,6 +69,11 @@ def test_local_css_dependencies_exist():
             if url.startswith(('http:', 'https:', 'data:')):
                 continue
             assert (css.parent / url.split('#')[0].split('?')[0]).exists(), (css, url)
+
+
+def test_language_files_have_no_replacement_characters():
+    for path in (ROOT / 'skins/languages').glob('*.conf'):
+        assert '\ufffd' not in path.read_text(encoding='utf-8'), path
 
 
 def test_installed_archive_publishes_dependencies_and_notices(tmp_path):
@@ -86,7 +92,9 @@ def test_installed_archive_publishes_dependencies_and_notices(tmp_path):
                      str(station / 'weewx.conf'), '--yes']]:
         completed = subprocess.run(command, capture_output=True, text=True)
         assert completed.returncode == 0, completed.stdout + completed.stderr
-    public = station / 'public_html'
+    installed = configobj.ConfigObj(str(station / 'weewx.conf'), encoding='utf-8')
+    assert installed['StdReport']['Niculskin']['HTML_ROOT'] == 'public_html/niculskin'
+    public = station / 'public_html/niculskin'
     helper = ROOT / 'tests/render_installed_report.py'
     environment = dict(os.environ, PYTHONPATH=str(station / 'bin'))
     for first_run in ['first', 'upgrade']:
